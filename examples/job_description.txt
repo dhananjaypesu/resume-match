@@ -1,0 +1,26 @@
+Associate Software Engineer - Backend
+
+About the role
+We are looking for a backend engineer to build and scale the APIs that power our payments platform.
+You will work closely with product managers and frontend engineers to ship reliable services.
+
+Responsibilities:
+- Design, build and maintain RESTful APIs and microservices in Python
+- Write clean, well-tested code and participate in code reviews
+- Improve performance and reliability of production services
+- Monitor production systems and troubleshoot issues across services
+- Collaborate with cross-functional teams in an Agile environment
+
+Requirements:
+- Strong programming skills in Python
+- Experience with Flask or Django
+- Solid understanding of SQL and relational databases such as PostgreSQL
+- Familiarity with Git, Docker and Linux
+- Good grasp of data structures and algorithms
+- Clear communication and problem solving skills
+
+Nice to have:
+- Experience with AWS and Kubernetes
+- Exposure to Redis or other caching systems
+- CI/CD pipelines using GitHub Actions
+- Interest in payments, fintech or production reliability
