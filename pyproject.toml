@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resume-match"
+version = "0.1.0"
+description = "Score a resume against a job description like an ATS, and get concrete fixes."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Dhananjay" }]
+keywords = ["resume", "ats", "job-search", "cv", "career", "nlp"]
+dependencies = ["pypdf>=4.0", "python-docx>=1.1", "Flask>=3.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+resume-match = "resume_match.cli:main"
+resume-match-web = "resume_match.web:main"
+
+[project.urls]
+Homepage = "https://github.com/dhananjaypesu/resume-match"
+
+[tool.setuptools.packages.find]
+include = ["resume_match*"]
+
+[tool.setuptools.package-data]
+resume_match = ["templates/*.html"]

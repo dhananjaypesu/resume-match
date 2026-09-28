@@ -1,0 +1,36 @@
+ANANYA RAO
+Bengaluru, India | ananya.rao@example.com | +91 98765 43210
+linkedin.com/in/ananya-rao-example | github.com/ananya-rao-example
+
+SUMMARY
+Final-year Computer Science student who builds backend services and data tools with Python.
+
+EDUCATION
+B.Tech in Computer Science, Example Institute of Technology, 2023 - 2027
+CGPA: 8.6 / 10
+
+TECHNICAL SKILLS
+Languages: Python, Java, SQL, JavaScript
+Frameworks: Flask, React, pandas, NumPy
+Databases: PostgreSQL, SQLite
+Tools: Git, Docker, Linux, Jupyter
+
+EXPERIENCE
+Backend Intern, Example Fintech Pvt Ltd, May 2025 - Jul 2025
+- Built REST APIs in Flask for a loan-application workflow used by 3 internal teams
+- Reduced average API response time by 40% by adding PostgreSQL indexes and query caching
+- Wrote unit tests with pytest, raising coverage from 35% to 80%
+- Responsible for documenting endpoints for the frontend team
+
+PROJECTS
+Campus Event Tracker (Flask, SQLite, React)
+- Designed a web app for 20+ college clubs to publish events and track RSVPs
+- Deployed with Docker on a Linux VM; handled 1,200 registrations during the annual fest
+
+Sales Dashboard (Python, pandas, Plotly)
+- Analyzed 50,000 rows of retail sales data to find top-performing regions and products
+- Worked on visualizations for weekly revenue trends
+
+LEADERSHIP
+Logistics Head, College Cultural Fest
+- Led a team of 12 volunteers to manage vendors and on-site operations for 3,000 attendees

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resume Match</title>
+<style>
+  :root {
+    --bg:#f6f5f1; --card:#ffffff; --fg:#1c1b19; --muted:#6d6a63; --line:#e4e1d9;
+    --accent:#2c5b4f; --accent-soft:#e3eee9; --good:#2f7a4a; --warn:#a86b12; --bad:#b03a2e;
+    --good-soft:#e5f2e9; --warn-soft:#f8eedb; --bad-soft:#f7e3e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#141413; --card:#1d1c1a; --fg:#ecebe6; --muted:#9b988f; --line:#2f2d2a;
+      --accent:#7cc2a8; --accent-soft:#1f302a; --good:#6fcf8e; --warn:#e5b25d; --bad:#ef8a7e;
+      --good-soft:#1c2c21; --warn-soft:#30271a; --bad-soft:#33201d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 36px 16px 64px; }
+  header h1 { margin:0; font-size: 1.9rem; letter-spacing:-.01em; }
+  header p { margin:6px 0 28px; color:var(--muted); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px; margin-bottom:18px; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  label { display:block; font-weight:600; margin-bottom:8px; }
+  .hint { color:var(--muted); font-size:.88rem; font-weight:400; }
+  textarea, input[type=file] { width:100%; font:inherit; color:inherit; }
+  textarea { min-height: 240px; padding:12px; border:1px solid var(--line); border-radius:8px; background:transparent; resize:vertical; font-size:.92rem; }
+  input[type=file] { padding:10px; border:1px dashed var(--line); border-radius:8px; margin-bottom:10px; }
+  .or { text-align:center; color:var(--muted); font-size:.85rem; margin:4px 0 8px; }
+  .actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:4px; }
+  button { background:var(--accent); color:var(--card); border:0; border-radius:8px; padding:12px 22px; font:inherit; font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  .error { background:var(--bad-soft); color:var(--bad); padding:12px 14px; border-radius:8px; margin-bottom:18px; }
+  .score { display:flex; gap:24px; align-items:center; flex-wrap:wrap; }
+  .ring { --p:0; width:128px; height:128px; border-radius:50%; flex:none;
+          background: conic-gradient(var(--ring) calc(var(--p) * 1%), var(--line) 0);
+          display:grid; place-items:center; }
+  .ring span { width:100px; height:100px; border-radius:50%; background:var(--card); display:grid; place-items:center;
+               font-size:2rem; font-weight:700; }
+  .grade { font-size:1.35rem; font-weight:700; margin:0 0 4px; }
+  .bars { flex:1; min-width:240px; }
+  .bar { display:grid; grid-template-columns: 140px 1fr 44px; gap:10px; align-items:center; margin:8px 0; font-size:.92rem; }
+  .track { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+  .fill { height:100%; border-radius:4px; }
+  h2 { font-size:1.05rem; margin:0 0 12px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+  .chip { padding:4px 10px; border-radius:999px; font-size:.86rem; }
+  .chip.good { background:var(--good-soft); color:var(--good); }
+  .chip.bad { background:var(--bad-soft); color:var(--bad); }
+  .chip.warn { background:var(--warn-soft); color:var(--warn); }
+  .sub { font-size:.82rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:0 0 6px; }
+  ol.tips { margin:0; padding-left:20px; }
+  ol.tips li { margin-bottom:10px; }
+  .facts { display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:12px; }
+  .fact b { display:block; font-size:1.3rem; }
+  .fact span { color:var(--muted); font-size:.86rem; }
+  footer { color:var(--muted); font-size:.85rem; text-align:center; margin-top:28px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Resume Match</h1>
+    <p>See how well your resume matches a job description, the way an applicant tracking system would — and exactly what to fix.</p>
+  </header>
+
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+  {% if result %}
+  {% set col = 'var(--good)' if result.score >= 70 else ('var(--warn)' if result.score >= 50 else 'var(--bad)') %}
+  <div class="card">
+    <div class="score">
+      <div class="ring" style="--p: {{ result.score }}; --ring: {{ col }}"><span>{{ result.score }}</span></div>
+      <div class="bars">
+        <p class="grade" style="color: {{ col }}">{{ result.grade }}</p>
+        {% set names = {'skills': 'Skills match', 'keywords': 'Job keywords', 'format': 'Format & contact', 'impact': 'Impact & wording'} %}
+        {% for key, part in result.breakdown.items() if part.weight %}
+        {% set c = 'var(--good)' if part.score >= 70 else ('var(--warn)' if part.score >= 50 else 'var(--bad)') %}
+        <div class="bar"><span>{{ names[key] }}</span>
+          <div class="track"><div class="fill" style="width: {{ part.score }}%; background: {{ c }}"></div></div>
+          <span>{{ part.score }}%</span></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>How to improve</h2>
+    <ol class="tips">{% for tip in result.suggestions %}<li>{{ tip }}</li>{% endfor %}</ol>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Skills</h2>
+      {% if result.matched_required %}<p class="sub">Required — you have</p>
+      <div class="chips">{% for s in result.matched_required %}<span class="chip good">✔ {{ s }}</span>{% endfor %}</div>{% endif %}
+      {% if result.missing_required %}<p class="sub">Required — missing</p>
+      <div class="chips">{% for s in result.missing_required %}<span class="chip bad">✘ {{ s }}</span>{% endfor %}</div>{% endif %}
+      {% if result.matched_preferred %}<p class="sub">Nice to have — you have</p>
+      <div class="chips">{% for s in result.matched_preferred %}<span class="chip good">✔ {{ s }}</span>{% endfor %}</div>{% endif %}
+      {% if result.missing_preferred %}<p class="sub">Nice to have — missing</p>
+      <div class="chips">{% for s in result.missing_preferred %}<span class="chip warn">○ {{ s }}</span>{% endfor %}</div>{% endif %}
+    </div>
+    <div class="card">
+      <h2>Job keywords</h2>
+      {% if result.matched_keywords %}<p class="sub">Found in your resume</p>
+      <div class="chips">{% for s in result.matched_keywords %}<span class="chip good">{{ s }}</span>{% endfor %}</div>{% endif %}
+      {% if result.missing_keywords %}<p class="sub">Missing</p>
+      <div class="chips">{% for s in result.missing_keywords %}<span class="chip warn">{{ s }}</span>{% endfor %}</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Resume health</h2>
+    <div class="facts">
+      <div class="fact"><b>{{ result.impact.quantified }}/{{ result.impact.statements }}</b><span>bullets with numbers</span></div>
+      <div class="fact"><b>{{ result.impact.action_led }}/{{ result.impact.statements }}</b><span>start with an action verb</span></div>
+      <div class="fact"><b>{{ result.word_count }}</b><span>words</span></div>
+      <div class="fact"><b>{{ result.sections|length }}</b><span>sections: {{ result.sections|join(', ') or 'none' }}</span></div>
+      <div class="fact"><b>{% for k, ok in result.contact.items() %}{{ '✔' if ok else '✘' }}{% endfor %}</b>
+        <span>{% for k, ok in result.contact.items() %}{{ k }}{{ ', ' if not loop.last }}{% endfor %}</span></div>
+    </div>
+  </div>
+  <p><a href="{{ url_for('index') }}">← Check another resume</a></p>
+  {% else %}
+
+  <form class="card" method="post" enctype="multipart/form-data">
+    <div class="grid">
+      <div>
+        <label>Your resume <span class="hint">PDF, DOCX or TXT</span></label>
+        <input type="file" name="resume_file" accept=".pdf,.docx,.txt">
+        <div class="or">or paste it</div>
+        <textarea name="resume_text" placeholder="Paste your resume text here" style="min-height:170px"></textarea>
+      </div>
+      <div>
+        <label>Job description</label>
+        <textarea name="job_text" placeholder="Paste the full job description" required>{{ job_text }}</textarea>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="submit">Analyze match</button>
+      <a href="{{ url_for('example') }}">See an example report</a>
+    </div>
+  </form>
+  {% endif %}
+
+  <footer>Runs entirely on this server — your resume isn't stored or sent anywhere.</footer>
+</main>
+</body>
+</html>
